@@ -40,6 +40,7 @@ class MultidimGaussianLikelihood(bilby.Likelihood):
         self.data = np.array(data)
         self.N = len(data)
         self.parameters = {}
+        self._marginalized_parameters = []
 
     def log_likelihood(self):
         mu = np.array(
