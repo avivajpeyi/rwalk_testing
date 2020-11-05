@@ -4,8 +4,10 @@ MULTI_RWALK = "multi_rwalk"
 REGULAR_RWALK = "regular_rwalk"
 
 PYTHON_PATHS = {
-    MULTI_RWALK: "",
-    REGULAR_RWALK: ""
+    MULTI_RWALK:
+        "/home/avi.vajpeyi/.conda/envs/timeslide",
+    REGULAR_RWALK:
+        "/cvmfs/oasis.opensciencegrid.org/ligo/sw/conda/envs/igwn-py38/bin/python3"
 }
 
 TESTS = [
@@ -19,9 +21,9 @@ SUB_FILE = """
 universe = vanilla
 executable = {EXE}
 
-log = {LOGDIR}/$(JOB).log
-error = {LOGDIR}/$(JOB).err
-output = {LOGDIR}/$(JOB).out
+log = {LOGDIR}/{JOBNAME}.log
+error = {LOGDIR}/{JOBNAME}.err
+output = {LOGDIR}/{JOBNAME}.out
 
 arguments = {ARGS_STRING}
 
@@ -39,7 +41,8 @@ queue 1
 
 
 def make_condor_submission_files(rwalk_type):
-    log_dir = os.makedirs(f"{rwalk_type}_logs", exist_ok=True)
+    log_dir = f"{rwalk_type}_logs"
+    os.makedirs(log_dir, exist_ok=True)
     for test_script in TESTS:
         basename = os.path.basename(test_script)
         job_name = f"{rwalk_type}_{basename}"
@@ -48,7 +51,8 @@ def make_condor_submission_files(rwalk_type):
             f.write(SUB_FILE.format(
                 EXE=PYTHON_PATHS[rwalk_type],
                 LOGDIR=log_dir,
-                ARGS_STRING=f"{test_script} {job_name}"
+                ARGS_STRING=f"{test_script} {job_name}",
+                JOBNAME=job_name
             ))
             print(f"condor_submit {sub_fname}")
 
