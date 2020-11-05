@@ -2,11 +2,17 @@
 
 This repo documents various tests conducted to compare a new r-walk method that returns all the accepted points from it's random walks (normally > 100 walk steps).
 
-| Test                        | Notes     |
-|---                          |---        |
-| Bilby ["fast_tutorial.py"]  |           |
-|                             |           |
-|                             |           |
+| Test                                      | Notes     |
+|---                                        |---        |
+| Non-GW ["multidimensional_gaussian.py"]   |           |
+| Quick BBH injection ["fast_tutorial.py"]  |           |
+| BNS injection [""]                        |           |
+| GW150914 [""]                             |           |
 
 
-["fast_tutorial.py"]: ? 
+["fast_tutorial.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/injection_examples/fast_tutorial.py
+["multidimensional_gaussian.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/core_examples/multidimensional_gaussian.py
+["bns.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/injection_examples/binary_neutron_star_example.py
+["gw150914.py"]:
+
+

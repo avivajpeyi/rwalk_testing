@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """
+https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/injection_examples/fast_tutorial.py
+
 Tutorial to demonstrate running parameter estimation on a reduced parameter
 space for an injected signal.
 
@@ -9,6 +11,7 @@ between luminosity distances of 100Mpc and 5Gpc, the cosmology is Planck15.
 """
 from __future__ import division, print_function
 
+import sys
 import numpy as np
 import bilby
 
@@ -18,7 +21,7 @@ duration = 4.
 sampling_frequency = 2048.
 
 # Specify the output directory and the name of the simulation.
-label = 'multi_rwalk'
+label = sys.argv[1]
 outdir = f'outdir_{label}'
 
 bilby.core.utils.setup_logger(outdir=outdir, label=label)
