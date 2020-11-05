@@ -92,7 +92,8 @@ likelihood = bilby.gw.GravitationalWaveTransient(
 
 # Run sampler.  In this case we're going to use the `nestle` sampler
 result = bilby.run_sampler(
-    likelihood=likelihood, priors=priors, sampler='nestle', npoints=100,
+    likelihood=likelihood, priors=priors, sampler='dynesty', npoints=100,
+    sample="rwalk_dynesty",
     injection_parameters=injection_parameters, outdir=outdir, label=label,
     conversion_function=bilby.gw.conversion.generate_all_bns_parameters)
 
