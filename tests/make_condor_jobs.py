@@ -5,7 +5,7 @@ REGULAR_RWALK = "regular_rwalk"
 
 PYTHON_PATHS = {
     MULTI_RWALK:
-        "/home/avi.vajpeyi/.conda/envs/timeslide",
+        "/home/avi.vajpeyi/.conda/envs/timeslides/bin/python3",
     REGULAR_RWALK:
         "/cvmfs/oasis.opensciencegrid.org/ligo/sw/conda/envs/igwn-py38/bin/python3"
 }
