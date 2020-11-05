@@ -6,13 +6,13 @@ This repo documents various tests conducted to compare a new r-walk method that 
 |---                                        |---        |
 | Non-GW ["multidimensional_gaussian.py"]   |           |
 | Quick BBH injection ["fast_tutorial.py"]  |           |
-| BNS injection [""]                        |           |
-| GW150914 [""]                             |           |
+| BNS injection ["bns.py"]                  |           |
+| GW150914 ["gw150914.py"]                  |           |
 
 
 ["fast_tutorial.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/injection_examples/fast_tutorial.py
 ["multidimensional_gaussian.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/core_examples/multidimensional_gaussian.py
 ["bns.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/injection_examples/binary_neutron_star_example.py
-["gw150914.py"]:
+["gw150914.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/data_examples/GW150914.py
 
 
