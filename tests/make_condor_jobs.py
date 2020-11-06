@@ -44,7 +44,7 @@ def make_condor_submission_files(rwalk_type):
     log_dir = f"{rwalk_type}_logs"
     os.makedirs(log_dir, exist_ok=True)
     for test_script in TESTS:
-        basename = os.path.basename(test_script)
+        basename = os.path.basename(test_script).split(".py")[0]
         job_name = f"{rwalk_type}_{basename}"
         sub_fname = f"{job_name}.sh"
         with open(sub_fname, "w") as f:
