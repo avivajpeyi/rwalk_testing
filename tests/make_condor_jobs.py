@@ -46,7 +46,7 @@ def make_condor_submission_files(rwalk_type):
     for test_script in TESTS:
         basename = os.path.basename(test_script).split(".py")[0]
         job_name = f"{rwalk_type}_{basename}"
-        sub_fname = f"{job_name}.sh"
+        sub_fname = f"{job_name}.submit"
         with open(sub_fname, "w") as f:
             f.write(SUB_FILE.format(
                 EXE=PYTHON_PATHS[rwalk_type],
