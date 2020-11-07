@@ -68,7 +68,7 @@ priors.update(
 )
 priors.update(
     {
-        "sigma_{0}".format(i): bilby.core.prior.LogUniform(0.2, 5, "sigma")
+        "sigma_{0}".format(i): bilby.core.prior.Uniform(0.2, 5, "sigma")
         for i in range(dim)
     }
 )
