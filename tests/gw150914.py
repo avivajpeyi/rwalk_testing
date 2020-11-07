@@ -86,7 +86,7 @@ likelihood = bilby.gw.likelihood.GravitationalWaveTransient(
 # along with some options for how to do the sampling and how to save the data
 result = bilby.run_sampler(
     likelihood, priors, sampler='dynesty', outdir=outdir, label=label,
-    nlive=1000, walks=100, n_check_point=10000, check_point_plot=True,
+    nlive=1500, walks=100, n_check_point=10000, check_point_plot=True,
     sample="rwalk_dynesty",
     conversion_function=bilby.gw.conversion.generate_all_bbh_parameters)
 result.plot_corner()
