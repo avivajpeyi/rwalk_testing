@@ -59,24 +59,11 @@ ifos.set_strain_data_from_power_spectral_densities(
 ifos.inject_signal(waveform_generator=waveform_generator,
                    parameters=injection_parameters)
 
-# Set up a PriorDict, which inherits from dict.
-# By default we will sample all terms in the signal models.  However, this will
-# take a long time for the calculation, so for this example we will set almost
-# all of the priors to be equall to their injected values.  This implies the
-# prior is a delta function at the true, injected value.  In reality, the
-# sampler implementation is smart enough to not sample any parameter that has
-# a delta-function prior.
-# The above list does *not* include mass_1, mass_2, theta_jn and luminosity
-# distance, which means those are the parameters that will be included in the
-# sampler.  If we do nothing, then the default priors get used.
-priors = bilby.gw.prior.BBHPriorDict()
-priors['geocent_time'] = bilby.core.prior.Uniform(
-    minimum=injection_parameters['geocent_time'] - 1,
-    maximum=injection_parameters['geocent_time'] + 1,
-    name='geocent_time', latex_label='$t_c$', unit='$s$')
+priors = bilby.gw.prior.BBHPriorDict(filename='GW150914.prior')
 for key in ['a_1', 'a_2', 'tilt_1', 'tilt_2', 'phi_12', 'phi_jl', 'psi', 'ra',
             'dec', 'geocent_time', 'phase']:
     priors[key] = injection_parameters[key]
+# SAMPLE IN q,Mc,theta_jn, Lumin_dist
 
 # Initialise the likelihood by passing in the interferometer data (ifos) and
 # the waveform generator
