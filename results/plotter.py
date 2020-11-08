@@ -62,20 +62,20 @@ def get_normalisation_weight(len_current_samples, len_of_longest_samples):
 
 RES = {
     'multidimensional_gaussian.py': [
-        '../tests/outdir_regular_rwalk_multidimensional_gaussian.py/regular_rwalk_multidimensional_gaussian_result.json',
-        '../tests/outdir_multi_rwalk_multidimensional_gaussian.py/multi_rwalk_multidimensional_gaussian_result.json',
+        '../tests/outdir_regular_rwalk_multidimensional_gaussian/regular_rwalk_multidimensional_gaussian_result.json',
+        '../tests/outdir_multi_rwalk_multidimensional_gaussian/multi_rwalk_multidimensional_gaussian_result.json',
     ],
     'bns.py': [
-        '../tests/outdir_regular_rwalk_bns.py/regular_rwalk_bns_result.json',
-        '../tests/outdir_multi_rwalk_bns.py/multi_rwalk_bns_result.json'
+        '../tests/outdir_regular_rwalk_bns/regular_rwalk_bns_result.json',
+        '../tests/outdir_multi_rwalk_bns/multi_rwalk_bns_result.json'
     ],
     'fast_tutorial.py': [
-        '../tests/outdir_regular_rwalk_fast_tutorial.py/regular_rwalk_fast_tutorial_result.json',
-        '../tests/outdir_multi_rwalk_fast_tutorial.py/multi_rwalk_fast_tutorial_result.json'
+        '../tests/outdir_regular_rwalk_fast_tutorial/regular_rwalk_fast_tutorial_result.json',
+        '../tests/outdir_multi_rwalk_fast_tutorial/multi_rwalk_fast_tutorial_result.json'
     ],
     'gw150914.py': [
-        '../tests/outdir_regular_rwalk_gw150914.py/regular_rwalk_gw150914_result.json',
-        '../tests/outdir_multi_rwalk_gw150914.py/multi_rwalk_gw150914_result.json'
+        '../tests/outdir_regular_rwalk_gw150914/regular_rwalk_gw150914_result.json',
+        '../tests/outdir_multi_rwalk_gw150914/multi_rwalk_gw150914_result.json'
     ]
 }
 
