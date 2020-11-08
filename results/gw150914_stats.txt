@@ -1,0 +1,12 @@
+Normal:
+7.71hr
+nsamples: 19345
+ln_noise_evidence: -20676.586
+ln_evidence: -20397.089 +/-  0.162
+ln_bayes_factor: 279.497 +/-  0.162
+Multi:
+0.43hr
+nsamples: 16538
+ln_noise_evidence: -20676.586
+ln_evidence: -20394.105 +/-  0.150
+ln_bayes_factor: 282.481 +/-  0.150

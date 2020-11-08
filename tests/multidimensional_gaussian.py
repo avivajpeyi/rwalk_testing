@@ -68,7 +68,7 @@ priors.update(
 )
 priors.update(
     {
-        "sigma_{0}".format(i): bilby.core.prior.LogUniform(0.2, 5, "sigma")
+        "sigma_{0}".format(i): bilby.core.prior.Uniform(0.2, 5, "sigma")
         for i in range(dim)
     }
 )
@@ -79,8 +79,8 @@ result = bilby.run_sampler(
     priors=priors,
     sampler="dynesty",
     sample="rwalk_dynesty",
-    npoints=500,
-    walks=10,
+    npoints=1500,
+    walks=100,
     outdir=outdir,
     label=label,
     plot=True,

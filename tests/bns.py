@@ -69,19 +69,15 @@ interferometers.inject_signal(parameters=injection_parameters,
 # BNS have aligned spins by default, if you want to allow precessing spins
 # pass aligned_spin=False to the BNSPriorDict
 priors = bilby.gw.prior.BNSPriorDict()
-for key in ['psi', 'geocent_time', 'ra', 'dec', 'chi_1', 'chi_2',
-            'theta_jn', 'luminosity_distance', 'phase']:
+for key in ['psi', 'geocent_time', 'ra', 'dec', 'chi_1', 'chi_2', 'theta_jn', 'luminosity_distance', 'phase']:
     priors[key] = injection_parameters[key]
 priors.pop('mass_ratio')
 priors.pop('lambda_1')
 priors.pop('lambda_2')
-priors['chirp_mass'] = bilby.core.prior.Gaussian(
-    1.215, 0.1, name='chirp_mass', unit='$M_{\\odot}$')
-priors['symmetric_mass_ratio'] = bilby.core.prior.Uniform(
-    0.1, 0.25, name='symmetric_mass_ratio')
+priors['chirp_mass'] = bilby.core.prior.Uniform(1.0, 1.4, name='chirp_mass', unit='$M_{\\odot}$')
+priors['symmetric_mass_ratio'] = bilby.core.prior.Uniform(0.1, 0.25, name='symmetric_mass_ratio')
 priors['lambda_tilde'] = bilby.core.prior.Uniform(0, 5000, name='lambda_tilde')
-priors['delta_lambda'] = bilby.core.prior.Uniform(
-    -5000, 5000, name='delta_lambda')
+priors['delta_lambda'] = bilby.core.prior.Uniform(-5000, 5000, name='delta_lambda')
 
 # Initialise the likelihood by passing in the interferometer data (IFOs)
 # and the waveform generator
@@ -92,9 +88,13 @@ likelihood = bilby.gw.GravitationalWaveTransient(
 
 # Run sampler.  In this case we're going to use the `nestle` sampler
 result = bilby.run_sampler(
-    likelihood=likelihood, priors=priors, sampler='dynesty', npoints=100,
+    likelihood=likelihood, 
+    priors=priors, sampler='dynesty', npoints=1000, walks=100,
     sample="rwalk_dynesty",
-    injection_parameters=injection_parameters, outdir=outdir, label=label,
-    conversion_function=bilby.gw.conversion.generate_all_bns_parameters)
+    injection_parameters=injection_parameters, 
+    outdir=outdir, 
+    label=label,
+    conversion_function=bilby.gw.conversion.generate_all_bns_parameters
+)
 
 result.plot_corner()
