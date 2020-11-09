@@ -18,9 +18,14 @@ outdir = f'outdir_{label}'
 
 dim = 5
 mean = np.zeros(dim)
-cov = np.ones((dim, dim))
+sigma = 1.0
+cov = np.zeros((dim, dim),int)
+np.fill_diagonal(cov, sigma)
 data = np.random.multivariate_normal(mean, cov, 100)
-
+truths = {}
+for i in range(dim):
+    truths[f"mu_{i}"] = 0
+    truths[f"sigma_{i}"] = sigma
 
 class MultidimGaussianLikelihood(bilby.Likelihood):
     """
@@ -35,7 +40,7 @@ class MultidimGaussianLikelihood(bilby.Likelihood):
             The number of dimensions
         """
 
-    def __init__(self, data, dim):
+    def __init__(self, data, dim, truths):
         parmeters = {}
         for i in range(dim):
             parmeters[f"mu_{i}"] = None
@@ -44,6 +49,7 @@ class MultidimGaussianLikelihood(bilby.Likelihood):
         self.dim = dim
         self.data = np.array(data)
         self.N = len(data)
+        self.truths = truths
 
     def log_likelihood(self):
         mu = np.array(
@@ -58,7 +64,7 @@ class MultidimGaussianLikelihood(bilby.Likelihood):
         )
 
 
-likelihood = MultidimGaussianLikelihood(data, dim)
+likelihood = MultidimGaussianLikelihood(data, dim, truths)
 priors = bilby.core.prior.PriorDict()
 priors.update(
     {
