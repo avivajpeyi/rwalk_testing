@@ -16,13 +16,14 @@ import numpy as np
 import sys
 import bilby
 
+np.random.seed(0)
+
 # Specify the output directory and the name of the simulation.
 label = sys.argv[1]
 outdir = f'outdir_{label}'
 bilby.core.utils.setup_logger(outdir=outdir, label=label)
 
-# Set up a random seed for result reproducibility.  This is optional!
-np.random.seed(88170235)
+
 
 # We are going to inject a binary neutron star waveform.  We first establish a
 # dictionary of parameters that includes all of the different waveform

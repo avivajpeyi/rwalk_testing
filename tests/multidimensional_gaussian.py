@@ -5,90 +5,86 @@ Testing the recovery of a multi-dimensional
 Gaussian with zero mean and unit variance
 """
 from __future__ import division
-import bilby
-import numpy as np
+
 import sys
 
+import bilby
+import numpy as np
 
-# A few simple setup steps
-label = sys.argv[1]
-outdir = f'outdir_{label}'
+np.random.seed(0)
 
-# Generating simulated data: generating n-dim Gaussian
+DIM = 3
+MU_RANGE = (-1, 1)
+SIGMA_RANGE = (0.2, 5)
 
-dim = 5
-mean = np.zeros(dim)
-sigma = 1.0
-cov = np.zeros((dim, dim),int)
-np.fill_diagonal(cov, sigma)
-data = np.random.multivariate_normal(mean, cov, 100)
-truths = {}
-for i in range(dim):
-    truths[f"mu_{i}"] = 0
-    truths[f"sigma_{i}"] = sigma
+
+def get_multidim_gausian_prior():
+    prior = {}
+    for i in range(DIM):
+        prior[f"mu_{i}"] = bilby.core.prior.Uniform(min(MU_RANGE), max(MU_RANGE), f"mu_{i}")
+        prior[f"sigma_{i}"] = bilby.core.prior.Uniform(min(SIGMA_RANGE), max(SIGMA_RANGE), f"sigma_{i}")
+    return bilby.core.prior.PriorDict(prior)
+
 
 class MultidimGaussianLikelihood(bilby.Likelihood):
-    """
-        A multivariate Gaussian likelihood
-        with known analytic solution.
 
-        Parameters
-        ----------
-        data: array_like
-            The data to analyse
-        dim: int
-            The number of dimensions
-        """
-
-    def __init__(self, data, dim, truths):
+    def __init__(self, cov, mu):
+        self.cov = np.atleast_2d(cov)
+        self.mu = np.atleast_1d(mu)
+        self.sigma = np.sqrt(np.diag(self.cov))
+        self.N = 100
+        self.data = np.random.multivariate_normal(mu, cov, 100)
+        self.truths = {}
         parmeters = {}
-        for i in range(dim):
+        for i in range(DIM):
             parmeters[f"mu_{i}"] = None
             parmeters[f"sigma_{i}"] = None
+            self.truths[f"mu_{i}"] = self.mu[i]
+            self.truths[f"sigma_{i}"] = self.sigma[i]
         super().__init__(parameters=parmeters)
-        self.dim = dim
-        self.data = np.array(data)
-        self.N = len(data)
-        self.truths = truths
 
     def log_likelihood(self):
-        mu = np.array(
-            [self.parameters["mu_{0}".format(i)] for i in range(self.dim)]
-        )
-        sigma = np.array(
-            [self.parameters["sigma_{0}".format(i)] for i in range(self.dim)]
-        )
+        mu = np.array([self.parameters["mu_{0}".format(i)] for i in range(DIM)])
+        sigma = np.array([self.parameters["sigma_{0}".format(i)] for i in range(DIM)])
         p = np.array([(self.data[n, :] - mu) / sigma for n in range(self.N)])
-        return np.sum(
-            -0.5 * (np.sum(p ** 2) + self.N * np.log(2 * np.pi * sigma ** 2))
-        )
+        return np.sum(-0.5 * (np.sum(p ** 2) + self.N * np.log(2 * np.pi * sigma ** 2)))
+
+    def analytical_log_likelihood(self, priors):
+        """Z = int dmu_i dsig_i * likelihood(mi_i, sig_i,) * prior(mi_i, sig_i,)"""
+        n = 100
+        mu_vals = np.linspace(*MU_RANGE, num=n)
+        sig_vals = np.linspace(*SIGMA_RANGE, num=n)
+        dm, ds = mu_vals[1]-mu_vals[0], sig_vals[1]-sig_vals[0]
+        ln_z = 0
+        ln_prior_vol =  np.sum(np.log([prior.maximum-prior.minimum for key, prior in priors.items()]))
+        # for mu, sig in zip(mu_vals, sig_vals):
+        #     ln_z +=
+        ln_z-= ln_prior_vol
+        return ln_z
 
 
-likelihood = MultidimGaussianLikelihood(data, dim, truths)
-priors = bilby.core.prior.PriorDict()
-priors.update(
-    {
-        "mu_{0}".format(i): bilby.core.prior.Uniform(-5, 5, "mu")
-        for i in range(dim)
-    }
-)
-priors.update(
-    {
-        "sigma_{0}".format(i): bilby.core.prior.Uniform(0.2, 5, "sigma")
-        for i in range(dim)
-    }
-)
-# And run sampler
-# The plot arg produces trace_plots useful for diagnostics
-result = bilby.run_sampler(
-    likelihood=likelihood,
-    priors=priors,
-    sampler="dynesty",
-    sample="rwalk_dynesty",
-    npoints=1500,
-    walks=100,
-    outdir=outdir,
-    label=label,
-    plot=True,
-)
-result.plot_corner()
+def main():
+    label = sys.argv[1]
+    outdir = f'outdir_{label}'
+
+    mean = np.zeros(DIM)
+    sigma = np.ones(DIM)
+    cov = np.zeros((DIM, DIM), int)
+    np.fill_diagonal(cov, sigma)
+    likelihood =MultidimGaussianLikelihood(cov=cov, mu=mean)
+    result = bilby.run_sampler(
+        likelihood=likelihood,
+        priors=get_multidim_gausian_prior(),
+        sampler="dynesty",
+        sample="rwalk_dynesty",
+        npoints=500,
+        walks=10,
+        outdir=outdir,
+        label=label,
+        plot=True,
+    )
+    result.plot_corner(truths=likelihood.truths)
+
+
+if __name__ == "__main__":
+    main()
