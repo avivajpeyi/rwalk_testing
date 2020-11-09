@@ -49,19 +49,6 @@ class MultidimGaussianLikelihood(bilby.Likelihood):
         p = np.array([(self.data[n, :] - mu) / sigma for n in range(self.N)])
         return np.sum(-0.5 * (np.sum(p ** 2) + self.N * np.log(2 * np.pi * sigma ** 2)))
 
-    def analytical_log_likelihood(self, priors):
-        """Z = int dmu_i dsig_i * likelihood(mi_i, sig_i,) * prior(mi_i, sig_i,)"""
-        n = 100
-        mu_vals = np.linspace(*MU_RANGE, num=n)
-        sig_vals = np.linspace(*SIGMA_RANGE, num=n)
-        dm, ds = mu_vals[1]-mu_vals[0], sig_vals[1]-sig_vals[0]
-        ln_z = 0
-        ln_prior_vol =  np.sum(np.log([prior.maximum-prior.minimum for key, prior in priors.items()]))
-        # for mu, sig in zip(mu_vals, sig_vals):
-        #     ln_z +=
-        ln_z-= ln_prior_vol
-        return ln_z
-
 
 def main():
     label = sys.argv[1]
@@ -77,8 +64,8 @@ def main():
         priors=get_multidim_gausian_prior(),
         sampler="dynesty",
         sample="rwalk_dynesty",
-        npoints=500,
-        walks=10,
+        npoints=1500,
+        walks=100,
         outdir=outdir,
         label=label,
         plot=True,

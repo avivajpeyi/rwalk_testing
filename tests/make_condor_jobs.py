@@ -14,7 +14,8 @@ TESTS = [
     'multidimensional_gaussian.py',
     'bns.py',
     'fast_tutorial.py',
-    'gw150914.py'
+    'gw150914.py',
+    '1d_guassian.py'
 ]
 
 SUB_FILE = """
