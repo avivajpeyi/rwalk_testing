@@ -5,6 +5,8 @@ import sys
 import bilby
 import numpy as np
 
+np.random.seed(0)
+
 MU_RANGE = (-1, 1)
 SIGMA_RANGE = (0.2, 5)
 
