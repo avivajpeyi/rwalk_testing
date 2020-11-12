@@ -60,7 +60,7 @@ def main():
         likelihood=likelihood,
         priors=gaussian_priors,
         sampler="dynesty",
-        sample="rwalk_dynesty",
+        sample="rwalk",
         npoints=1500,
         walks=100,
         outdir=outdir,

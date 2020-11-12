@@ -63,7 +63,7 @@ def main():
         likelihood=likelihood,
         priors=get_multidim_gausian_prior(),
         sampler="dynesty",
-        sample="rwalk_dynesty",
+        sample="rwalk",
         npoints=1500,
         walks=100,
         outdir=outdir,

@@ -91,7 +91,7 @@ likelihood = bilby.gw.GravitationalWaveTransient(
 result = bilby.run_sampler(
     likelihood=likelihood, 
     priors=priors, sampler='dynesty', npoints=1000, walks=100,
-    sample="rwalk_dynesty",
+    sample="rwalk",
     injection_parameters=injection_parameters, 
     outdir=outdir, 
     label=label,
