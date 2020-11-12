@@ -39,17 +39,19 @@ def get_colors(num_colors: int, alpha: Optional[float]=1) -> List[List[float]]:
     return cs
 
 
-def overlaid_corner(samples_list, sample_labels, param=[], fname="test.png"):
+def overlaid_corner(samples_list, sample_labels, param=[], truths=None, fname="test.png"):
     """Plots multiple corners on top of each other"""
     print(f"Creating {fname}")
     n = len(samples_list)
 
     max_len = max([len(s) for s in samples_list])
-    colors = get_colors(len(samples_list))
-
+    colors = get_colors(len(samples_list) + 1 )
+    
     fig = corner.corner(
         samples_list[0],
         color=colors[0],
+        truths=truths,
+        truth_color=colors[-1],
         **CORNER_KWARGS
     )
 
@@ -141,22 +143,6 @@ def print_info(normal, multi, fname):
         f.write(f"Multi:\n{(multi.sampling_time) / (60 * 60):.2f}hr\n{multi}")
 
 
-@exception
-def multid():
-    dim = 3
-    r = RES["multidimensional_gaussian.py"]
-    normal = bilby.gw.result.CBCResult.from_json(r[0])
-    multi = bilby.gw.result.CBCResult.from_json(r[1])
-    samples_list = [normal.posterior, multi.posterior]
-    param = [f"mu_{i}" for i in range(dim)] + [f"sigma_{i}" for i in range(dim)] + [
-        "log_likelihood"]
-    overlaid_corner(
-        samples_list=[s[param] for s in samples_list],
-        sample_labels=["normal", "multi"],
-        fname="multidim_corner.png"
-    )
-    print_info(normal, multi, "multidim_stats.txt")
-
 
 @exception
 def oned_gauss():
@@ -168,12 +154,36 @@ def oned_gauss():
     overlaid_corner(
         samples_list=[s[param] for s in samples_list],
         sample_labels=["normal", "multi"],
-        fname="1d_corner.png"
+        fname="1d_corner.png",
+        truths=[0,1, None]
     )
     print_info(normal, multi, "1d_stats.txt")
 
-
+    
 @exception
+def multid():
+    dim = 3
+    mean = np.zeros(dim)
+    cov = np.zeros((dim, dim), int)
+    np.fill_diagonal(cov, 1)
+    sigma = np.sqrt(np.diag(cov))
+    r = RES["multidimensional_gaussian.py"]
+    normal = bilby.gw.result.CBCResult.from_json(r[0])
+    multi = bilby.gw.result.CBCResult.from_json(r[1])
+    samples_list = [normal.posterior, multi.posterior]
+    param = [f"mu_{i}" for i in range(dim)] + [f"sigma_{i}" for i in range(dim)] + [
+        "log_likelihood"]
+    truths = list(np.concatenate((mean,sigma,[None]),axis=None))
+    overlaid_corner(
+        samples_list=[s[param] for s in samples_list],
+        sample_labels=["normal", "multi"],
+        fname="multidim_corner.png",
+        truths=truths
+    )
+    print_info(normal, multi, "multidim_stats.txt")
+
+
+
 def fast_tut():
     r = RES["fast_tutorial.py"]
     normal = bilby.gw.result.CBCResult.from_json(r[0])
@@ -181,14 +191,17 @@ def fast_tut():
     samples_list = [normal.posterior, multi.posterior]
     param = ['mass_ratio', 'chirp_mass', 'luminosity_distance', 'theta_jn'] + [
         "log_likelihood"]
+    truths = bilby.gw.conversion.generate_all_bbh_parameters(normal.injection_parameters)
+    truths = [truths.get(p, None) for p in param]
     overlaid_corner(
         samples_list=[s[param] for s in samples_list],
         sample_labels=["normal", "multi"],
-        fname="fast_corner.png"
+        fname="fast_corner.png",
+        truths=truths
     )
     print_info(normal, multi, "fast_stats.txt")
 
-
+    
 @exception
 def gw150914():
     r = RES["gw150914.py"]
@@ -228,12 +241,17 @@ def bns():
     samples_list = [normal.posterior, multi.posterior]
     param = ["chirp_mass", "symmetric_mass_ratio", "lambda_tilde", "delta_lambda"] + [
         "log_likelihood"]
+    truths = bilby.gw.conversion.generate_all_bns_parameters(normal.injection_parameters)
+    truths = [truths.get(p, None) for p in param]
     overlaid_corner(
         samples_list=[s[param] for s in samples_list],
         sample_labels=["normal", "multi"],
-        fname="bns_corner.png"
+        fname="bns_corner.png",
+        truths=truths
     )
     print_info(normal, multi, "bns_stats.txt")
+
+
 
 
 def main():
