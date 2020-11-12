@@ -65,6 +65,7 @@ def main():
         sampler="dynesty",
         sample="rwalk",
         npoints=1500,
+        nact=10,
         walks=100,
         outdir=outdir,
         label=label,

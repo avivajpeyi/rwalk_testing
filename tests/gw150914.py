@@ -12,9 +12,11 @@ the LIGO Data Grid instead.
 [1] https://gwpy.github.io/docs/stable/timeseries/remote-access.html
 """
 from __future__ import division, print_function
+
+import sys
+
 import bilby
 from gwpy.timeseries import TimeSeries
-import sys
 
 logger = bilby.core.utils.logger
 label = sys.argv[1]
@@ -85,9 +87,15 @@ likelihood = bilby.gw.likelihood.GravitationalWaveTransient(
 # Finally, we run the sampler. This function takes the likelihood and prior
 # along with some options for how to do the sampling and how to save the data
 result = bilby.run_sampler(
-    likelihood, priors, sampler='dynesty', outdir=outdir, label=label,
-    nlive=1500, walks=100, n_check_point=10000, check_point_plot=True,
+    likelihood, priors,
+    sampler='dynesty',
+    outdir=outdir,
+    label=label,
+    nact=10,
+    nlive=1500,
+    walks=100,
+    n_check_point=10000,
+    check_point_plot=True,
     sample="rwalk",
     conversion_function=bilby.gw.conversion.generate_all_bbh_parameters)
 result.plot_corner()
-

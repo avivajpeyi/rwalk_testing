@@ -12,6 +12,7 @@ between luminosity distances of 100Mpc and 5Gpc, the cosmology is Planck15.
 from __future__ import division, print_function
 
 import sys
+
 import bilby
 import numpy as np
 
@@ -24,8 +25,6 @@ outdir = f'outdir_{label}'
 # going to inject the signal into
 duration = 4.
 sampling_frequency = 2048.
-
-
 
 bilby.core.utils.setup_logger(outdir=outdir, label=label)
 
@@ -72,8 +71,15 @@ likelihood = bilby.gw.GravitationalWaveTransient(
 
 # Run sampler.  In this case we're going to use the `dynesty` sampler
 result = bilby.run_sampler(
-    likelihood=likelihood, priors=priors, sampler='dynesty', npoints=1000,
-    injection_parameters=injection_parameters, outdir=outdir, label=label,         sample="rwalk", queue_size=2)
+    likelihood=likelihood,
+    priors=priors,
+    sampler='dynesty',
+    npoints=1000,
+    injection_parameters=injection_parameters,
+    outdir=outdir,
+    label=label,
+    nact=10,
+    sample="rwalk", queue_size=2)
 
 # Make a corner plot.
 result.plot_corner()

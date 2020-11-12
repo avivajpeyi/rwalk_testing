@@ -63,6 +63,7 @@ def main():
         sample="rwalk",
         npoints=1500,
         walks=100,
+        nact=10,
         outdir=outdir,
         label=label,
         plot=True,
