@@ -1,6 +1,8 @@
+import functools
+import glob
+
 import bilby
 import corner
-import glob
 import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
 import numpy as np
@@ -60,6 +62,22 @@ def get_normalisation_weight(len_current_samples, len_of_longest_samples):
     return np.ones(len_current_samples) * (len_of_longest_samples / len_current_samples)
 
 
+def exception(function):
+    """
+    A decorator that wraps the passed in function and logs
+    exceptions should one occur
+    """
+
+    @functools.wraps(function)
+    def wrapper(*args, **kwargs):
+        try:
+            return function(*args, **kwargs)
+        except Exception as e:
+            print(f"There was an exception in {function.__name__}: {e}")
+
+    return wrapper
+
+
 RES = {
     'multidimensional_gaussian.py': [
         '../tests/outdir_regular_rwalk_multidimensional_gaussian/regular_rwalk_multidimensional_gaussian_result.json',
@@ -76,6 +94,10 @@ RES = {
     'gw150914.py': [
         '../tests/outdir_regular_rwalk_gw150914/regular_rwalk_gw150914_result.json',
         '../tests/outdir_multi_rwalk_gw150914/multi_rwalk_gw150914_result.json'
+    ],
+    '1d_gaussian.py': [
+        "../tests/outdir_regular_rwalk_1d_guassian/regular_rwalk_1d_guassian_result.json",
+        "../tests/outdir_multi_rwalk_1d_guassian/multi_rwalk_1d_guassian_result.json",
     ]
 }
 
@@ -103,6 +125,7 @@ def print_info(normal, multi, fname):
         f.write(f"Multi:\n{(multi.sampling_time) / (60 * 60):.2f}hr\n{multi}")
 
 
+@exception
 def multid():
     r = RES["multidimensional_gaussian.py"]
     normal = bilby.gw.result.CBCResult.from_json(r[0])
@@ -118,6 +141,22 @@ def multid():
     print_info(normal, multi, "multidim_stats.txt")
 
 
+@exception
+def oned_gauss():
+    r = RES["1d_gaussian.py"]
+    normal = bilby.gw.result.CBCResult.from_json(r[0])
+    multi = bilby.gw.result.CBCResult.from_json(r[1])
+    samples_list = [normal.posterior, multi.posterior]
+    param = [f"mu", "sigma", "log_likelihood"]
+    overlaid_corner(
+        samples_list=[s[param] for s in samples_list],
+        sample_labels=["normal", "multi"],
+        fname="multidim_corner.png"
+    )
+    print_info(normal, multi, "multidim_stats.txt")
+
+
+@exception
 def fast_tut():
     r = RES["fast_tutorial.py"]
     normal = bilby.gw.result.CBCResult.from_json(r[0])
@@ -133,6 +172,7 @@ def fast_tut():
     print_info(normal, multi, "fast_stats.txt")
 
 
+@exception
 def gw150914():
     r = RES["gw150914.py"]
     normal = bilby.gw.result.CBCResult.from_json(r[0])
@@ -163,6 +203,7 @@ def gw150914():
     print_info(normal, multi, "gw150914_stats.txt")
 
 
+@exception
 def bns():
     r = RES["bns.py"]
     normal = bilby.gw.result.CBCResult.from_json(r[0])
@@ -183,6 +224,7 @@ def main():
     bns()
     gw150914()
     multid()
+    oned_gauss()
 
 
 if __name__ == "__main__":
