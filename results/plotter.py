@@ -151,9 +151,9 @@ def oned_gauss():
     overlaid_corner(
         samples_list=[s[param] for s in samples_list],
         sample_labels=["normal", "multi"],
-        fname="multidim_corner.png"
+        fname="1d_corner.png"
     )
-    print_info(normal, multi, "multidim_stats.txt")
+    print_info(normal, multi, "1d_stats.txt")
 
 
 @exception
