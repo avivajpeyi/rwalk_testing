@@ -127,11 +127,12 @@ def print_info(normal, multi, fname):
 
 @exception
 def multid():
+    dim = 3
     r = RES["multidimensional_gaussian.py"]
     normal = bilby.gw.result.CBCResult.from_json(r[0])
     multi = bilby.gw.result.CBCResult.from_json(r[1])
     samples_list = [normal.posterior, multi.posterior]
-    param = [f"mu_{i}" for i in range(3)] + [f"sigma_{i}" for i in range(5)] + [
+    param = [f"mu_{i}" for i in range(dim)] + [f"sigma_{i}" for i in range(dim)] + [
         "log_likelihood"]
     overlaid_corner(
         samples_list=[s[param] for s in samples_list],
