@@ -1,5 +1,7 @@
 import os
 
+import pycondor
+
 MULTI_RWALK = "multi_rwalk"
 REGULAR_RWALK = "regular_rwalk"
 
@@ -18,49 +20,38 @@ TESTS = [
     '1d_guassian.py'
 ]
 
-SUB_FILE = """
-universe = vanilla
-executable = {EXE}
 
-log = {LOGDIR}/{JOBNAME}.log
-error = {LOGDIR}/{JOBNAME}.err
-output = {LOGDIR}/{JOBNAME}.out
-
-arguments = {ARGS_STRING}
-
-getenv = True
-accounting_group_user = avi.vajpeyi
-accounting_group = ligo.dev.o3.cbc.pe.lalinference
-
-notification = Always
-request_memory = 3GB
-request_disk = 500MB
-priority=100
-
-queue 1
-"""
-
-
-def make_condor_submission_files(rwalk_type):
-    log_dir = f"{rwalk_type}_logs"
-    os.makedirs(log_dir, exist_ok=True)
+def make_dag(rwalk_type):
+    maindir = os.path.abspath(f"./condor/{rwalk_type}")
+    logdir = os.path.join(maindir, "log")
+    subdir = os.path.join(maindir, "sub")
+    dagman = pycondor.Dagman(name=rwalk_type, submit=subdir)
     for test_script in TESTS:
         basename = os.path.basename(test_script).split(".py")[0]
         job_name = f"{rwalk_type}_{basename}"
-        sub_fname = f"{job_name}.submit"
-        with open(sub_fname, "w") as f:
-            f.write(SUB_FILE.format(
-                EXE=PYTHON_PATHS[rwalk_type],
-                LOGDIR=log_dir,
-                ARGS_STRING=f"{test_script} {job_name}",
-                JOBNAME=job_name
-            ))
-            print(f"condor_submit {sub_fname}")
+        job = pycondor.Job(
+            name=job_name,
+            executable=PYTHON_PATHS[rwalk_type],
+            output=logdir,
+            error=logdir,
+            submit=subdir,
+            request_memory="3GB",
+            getenv="True",
+            universe="vanilla",
+            extra_lines=[
+                "accounting_group_user = avi.vajpeyi",
+                "accounting_group = ligo.dev.o3.cbc.pe.lalinference"
+            ],
+            dag=dagman
+        )
+        job.add_arg(f"{test_script} {job_name}")
+    dagman.build_submit(submit_options="False", fancyname=False)
+    print(f"condor_submit_dag {os.path.join(subdir, f'{rwalk_type}.submit')}")
 
 
 def main():
-    make_condor_submission_files(MULTI_RWALK)
-    make_condor_submission_files(REGULAR_RWALK)
+    make_dag(MULTI_RWALK)
+    make_dag(REGULAR_RWALK)
 
 
 if __name__ == "__main__":
