@@ -83,11 +83,11 @@ waveform_generator = bilby.gw.WaveformGenerator(
     waveform_arguments={'waveform_approximant': 'IMRPhenomPv2',
                         'reference_frequency': 50})
 
-# In this step, we define the likelihood. Here we use the standard likelihood
-# function, passing it the data and the waveform generator.
+distance_lookup_table = os.path.join(outdir, "distance_lookup.npz")
 likelihood = bilby.gw.likelihood.GravitationalWaveTransient(
     ifo_list, waveform_generator, priors=priors, time_marginalization=True,
-    phase_marginalization=True, distance_marginalization=True)
+    phase_marginalization=True, distance_marginalization=True,
+    distance_marginalization_lookup_table=distance_lookup_table)
 
 # Finally, we run the sampler. This function takes the likelihood and prior
 # along with some options for how to do the sampling and how to save the data
