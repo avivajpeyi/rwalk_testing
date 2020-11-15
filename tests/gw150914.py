@@ -13,6 +13,7 @@ the LIGO Data Grid instead.
 """
 from __future__ import division, print_function
 
+import os
 import sys
 
 import bilby
@@ -21,6 +22,7 @@ from gwpy.timeseries import TimeSeries
 logger = bilby.core.utils.logger
 label = sys.argv[1]
 outdir = f'outdir_{label}'
+bilby.core.utils.check_directory_exists_and_if_not_mkdir(outdir)
 
 # Data set up
 trigger_time = 1126259462
@@ -38,13 +40,28 @@ psd_end_time = start_time
 # We now use gwpy to obtain analysis and psd data and create the ifo_list
 ifo_list = bilby.gw.detector.InterferometerList([])
 for det in ["H1", "L1"]:
-    logger.info("Downloading analysis data for ifo {}".format(det))
+
     ifo = bilby.gw.detector.get_empty_interferometer(det)
-    data = TimeSeries.fetch_open_data(det, start_time, end_time)
+
+    data_file = os.path.join(outdir, f"{det}_data.hdf5")
+    if os.path.exists(data_file):
+        logger.info(f"Loading analysis data for ifo {det} from {data_file}")
+        data = TimeSeries.read(data_file)
+    else:
+        logger.info(f"Downloading analysis data for ifo {det} from {data_file}")
+        data = TimeSeries.fetch_open_data(det, start_time, end_time)
+        data.write(data_file)
     ifo.strain_data.set_from_gwpy_timeseries(data)
 
-    logger.info("Downloading psd data for ifo {}".format(det))
-    psd_data = TimeSeries.fetch_open_data(det, psd_start_time, psd_end_time)
+    psd_file = os.path.join(outdir, f"{det}_psd.hdf5")
+    if os.path.exists(psd_file):
+        logger.info(f"Loading PSD data for ifo {det} from {psd_file}")
+        psd_data = TimeSeries.read(psd_file)
+    else:
+        logger.info(f"Downloading PSD data for ifo {det} from {psd_file}")
+        psd_data = TimeSeries.fetch_open_data(det, psd_start_time, psd_end_time)
+        psd_data.write(data_file)
+
     psd_alpha = 2 * roll_off / duration
     psd = psd_data.psd(
         fftlength=duration,
@@ -57,21 +74,9 @@ for det in ["H1", "L1"]:
     ifo_list.append(ifo)
 
 logger.info("Saving data plots to {}".format(outdir))
-bilby.core.utils.check_directory_exists_and_if_not_mkdir(outdir)
 ifo_list.plot_data(outdir=outdir, label=label)
 
-# We now define the prior.
-# We have defined our prior distribution in a local file, GW150914.prior
-# The prior is printed to the terminal at run-time.
-# You can overwrite this using the syntax below in the file,
-# or choose a fixed value by just providing a float value as the prior.
 priors = bilby.gw.prior.BBHPriorDict(filename='GW150914.prior')
-
-# In this step we define a `waveform_generator`. This is the object which
-# creates the frequency-domain strain. In this instance, we are using the
-# `lal_binary_black_hole model` source model. We also pass other parameters:
-# the waveform approximant and reference frequency and a parameter conversion
-# which allows us to sample in chirp mass and ratio rather than component mass
 waveform_generator = bilby.gw.WaveformGenerator(
     frequency_domain_source_model=bilby.gw.source.lal_binary_black_hole,
     parameter_conversion=bilby.gw.conversion.convert_to_lal_binary_black_hole_parameters,
