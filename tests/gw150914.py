@@ -60,7 +60,7 @@ for det in ["H1", "L1"]:
     else:
         logger.info(f"Downloading PSD data for ifo {det} from {psd_file}")
         psd_data = TimeSeries.fetch_open_data(det, psd_start_time, psd_end_time)
-        psd_data.write(data_file)
+        psd_data.write(psd_file)
 
     psd_alpha = 2 * roll_off / duration
     psd = psd_data.psd(
