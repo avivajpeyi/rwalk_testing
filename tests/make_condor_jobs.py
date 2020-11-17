@@ -28,8 +28,8 @@ BILBY_ANALYSIS_PATHS = {
 }
 
 TESTS = [
-    'multidimensional_gaussian.py',
-    '1d_guassian.py',
+    # 'multidimensional_gaussian.py',
+    # '1d_guassian.py',
     'bns_injection.ini',
     'bbh_injection.ini',
     'fast_bbh_injection.ini',
@@ -37,7 +37,7 @@ TESTS = [
 
 
 def make_dag(rwalk_type):
-    maindir = os.path.abspath(f"./jobsub_files/{rwalk_type}")
+    maindir = os.path.abspath(f"./jobsub_files")
     logdir = os.path.join(maindir, "log")
     subdir = os.path.join(maindir, "sub")
     dagman = pycondor.Dagman(name=rwalk_type, submit=subdir)
@@ -54,7 +54,7 @@ def make_dag(rwalk_type):
             args_str = f"{test_script} "
             args_str += f"--label {job_name} "
             args_str += f"--outdir outdir_{job_name} "
-            args_str += f"--analysis-executable '{analysis}' "
+            args_str += f"--analysis-executable {analysis} "
             args_str += f"--scheduler condor "
             args_str += f"--submit"
 
