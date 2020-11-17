@@ -6,7 +6,6 @@ import corner
 import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
 
 CORNER_KWARGS = dict(
     smooth=0.9,
@@ -22,11 +21,11 @@ CORNER_KWARGS = dict(
     title_fmt=".2E"
 )
 
-
 from typing import List, Optional
 import seaborn as sns
 
-def get_colors(num_colors: int, alpha: Optional[float]=1) -> List[List[float]]:
+
+def get_colors(num_colors: int, alpha: Optional[float] = 1) -> List[List[float]]:
     """Get a list of colorblind colors,
     :param num_colors: Number of colors.
     :param alpha: The transparency
@@ -39,14 +38,15 @@ def get_colors(num_colors: int, alpha: Optional[float]=1) -> List[List[float]]:
     return cs
 
 
-def overlaid_corner(samples_list, sample_labels, param=[], truths=None, fname="test.png"):
+def overlaid_corner(samples_list, sample_labels, param=[], truths=None,
+                    fname="test.png"):
     """Plots multiple corners on top of each other"""
     print(f"Creating {fname}")
     n = len(samples_list)
 
     max_len = max([len(s) for s in samples_list])
-    colors = get_colors(len(samples_list) + 1 )
-    
+    colors = get_colors(len(samples_list) + 1)
+
     fig = corner.corner(
         samples_list[0],
         color=colors[0],
@@ -106,12 +106,16 @@ RES = {
         '../tests/outdir_multi_rwalk_bns/multi_rwalk_bns_result.json'
     ],
     'fast_tutorial.py': [
-        '../tests/outdir_regular_rwalk_fast_tutorial/regular_rwalk_fast_tutorial_result.json',
-        '../tests/outdir_multi_rwalk_fast_tutorial/multi_rwalk_fast_tutorial_result.json'
+        '../tests/outdir_regular_rwalk_fast_bbh_injection/result/regular_rwalk_fast_bbh_injection_data0_0-0_analysis_H1_dynesty_result.json',
+        '../tests/outdir_multi_rwalk_fast_bbh_injection/result/multi_rwalk_fast_bbh_injection_data0_0-0_analysis_H1_dynesty_result.json'
+    ],
+    'bbh.py': [
+        '../tests/outdir_regular_rwalk_bbh_injection/result/regular_rwalk_bbh_injection_data0_0-0_analysis_H1L1V1_dynesty_result.json',
+        '../tests/outdir_multi_rwalk_bbh_injection/result/multi_rwalk_bbh_injection_data0_0-0_analysis_H1L1V1_dynesty_result.json'
     ],
     'gw150914.py': [
-        '../tests/outdir_regular_rwalk_gw150914/regular_rwalk_gw150914_result.json',
-        '../tests/outdir_multi_rwalk_gw150914/multi_rwalk_gw150914_result.json'
+        '../tests/outdir_regular_rwalk_GW150914/result/regular_rwalk_GW150914_data0_1126259462-4_analysis_H1L1_dynesty_merge_result.json',
+        '../tests/outdir_multi_rwalk_GW150914/result/multi_rwalk_GW150914_data0_1126259462-4_analysis_H1L1_dynesty_merge_result.json'
     ],
     '1d_gaussian.py': [
         "../tests/outdir_regular_rwalk_1d_guassian/regular_rwalk_1d_guassian_result.json",
@@ -143,7 +147,6 @@ def print_info(normal, multi, fname):
         f.write(f"Multi:\n{(multi.sampling_time) / (60 * 60):.2f}hr\n{multi}")
 
 
-
 @exception
 def oned_gauss():
     r = RES["1d_gaussian.py"]
@@ -155,11 +158,11 @@ def oned_gauss():
         samples_list=[s[param] for s in samples_list],
         sample_labels=["normal", "multi"],
         fname="1d_corner.png",
-        truths=[0,1, None]
+        truths=[0, 1, None]
     )
     print_info(normal, multi, "1d_stats.txt")
 
-    
+
 @exception
 def multid():
     dim = 3
@@ -173,7 +176,7 @@ def multid():
     samples_list = [normal.posterior, multi.posterior]
     param = [f"mu_{i}" for i in range(dim)] + [f"sigma_{i}" for i in range(dim)] + [
         "log_likelihood"]
-    truths = list(np.concatenate((mean,sigma,[None]),axis=None))
+    truths = list(np.concatenate((mean, sigma, [None]), axis=None))
     overlaid_corner(
         samples_list=[s[param] for s in samples_list],
         sample_labels=["normal", "multi"],
@@ -183,7 +186,6 @@ def multid():
     print_info(normal, multi, "multidim_stats.txt")
 
 
-
 def fast_tut():
     r = RES["fast_tutorial.py"]
     normal = bilby.gw.result.CBCResult.from_json(r[0])
@@ -191,7 +193,8 @@ def fast_tut():
     samples_list = [normal.posterior, multi.posterior]
     param = ['mass_ratio', 'chirp_mass', 'luminosity_distance', 'theta_jn'] + [
         "log_likelihood"]
-    truths = bilby.gw.conversion.generate_all_bbh_parameters(normal.injection_parameters)
+    truths = bilby.gw.conversion.generate_all_bbh_parameters(
+        normal.injection_parameters)
     truths = [truths.get(p, None) for p in param]
     overlaid_corner(
         samples_list=[s[param] for s in samples_list],
@@ -201,7 +204,41 @@ def fast_tut():
     )
     print_info(normal, multi, "fast_stats.txt")
 
-    
+def bbh_tut():
+    r = RES["bbh.py"]
+    normal = bilby.gw.result.CBCResult.from_json(r[0])
+    multi = bilby.gw.result.CBCResult.from_json(r[1])
+    samples_list = [normal.posterior, multi.posterior]
+    param = ["mass_ratio",
+             "chirp_mass",
+             "mass_1",
+             "mass_2",
+             "a_1",
+             "a_2",
+             "tilt_1",
+             "tilt_2",
+             "phi_12",
+             "phi_jl",
+             "luminosity_distance",
+             "dec",
+             "ra",
+             "theta_jn",
+             "psi",
+             "phase",
+             "geocent_time"] + ["log_likelihood"]
+    truths = bilby.gw.conversion.generate_all_bbh_parameters(
+        normal.injection_parameters)
+    truths = [truths.get(p, None) for p in param]
+    overlaid_corner(
+        samples_list=[s[param] for s in samples_list],
+        sample_labels=["normal", "multi"],
+        fname="bbh_corner.png",
+        truths=truths
+    )
+    print_info(normal, multi, "bbh.txt")
+
+
+
 @exception
 def gw150914():
     r = RES["gw150914.py"]
@@ -241,7 +278,8 @@ def bns():
     samples_list = [normal.posterior, multi.posterior]
     param = ["chirp_mass", "symmetric_mass_ratio", "lambda_tilde", "delta_lambda"] + [
         "log_likelihood"]
-    truths = bilby.gw.conversion.generate_all_bns_parameters(normal.injection_parameters)
+    truths = bilby.gw.conversion.generate_all_bns_parameters(
+        normal.injection_parameters)
     truths = [truths.get(p, None) for p in param]
     overlaid_corner(
         samples_list=[s[param] for s in samples_list],
@@ -252,11 +290,10 @@ def bns():
     print_info(normal, multi, "bns_stats.txt")
 
 
-
-
 def main():
     fast_tut()
     bns()
+    bbh()
     gw150914()
     multid()
     oned_gauss()
