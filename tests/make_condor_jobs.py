@@ -5,19 +5,34 @@ import pycondor
 MULTI_RWALK = "multi_rwalk"
 REGULAR_RWALK = "regular_rwalk"
 
-PYTHON_PATHS = {
+EXE_ROOT = {
     MULTI_RWALK:
-        "/home/avi.vajpeyi/.conda/envs/timeslides/bin/python3",
+        "/home/avi.vajpeyi/.conda/envs/timeslides/bin/",
     REGULAR_RWALK:
-        "/cvmfs/oasis.opensciencegrid.org/ligo/sw/conda/envs/igwn-py38/bin/python3"
+        "/cvmfs/oasis.opensciencegrid.org/ligo/sw/conda/envs/igwn-py38/bin/"
+}
+
+PYTHON_PATHS = {
+    MULTI_RWALK: f"{EXE_ROOT[MULTI_RWALK]}/python3",
+    REGULAR_RWALK: f"{EXE_ROOT[REGULAR_RWALK]}/python3",
+}
+
+BILBY_GENERATION_PATHS = {
+    MULTI_RWALK: f"{EXE_ROOT[MULTI_RWALK]}/bilby_pipe_generation",
+    REGULAR_RWALK: f"{EXE_ROOT[REGULAR_RWALK]}/bilby_pipe_generation",
+}
+
+BILBY_ANALYSIS_PATHS = {
+    MULTI_RWALK: f"{EXE_ROOT[MULTI_RWALK]}/bilby_pipe_analysis",
+    REGULAR_RWALK: f"{EXE_ROOT[REGULAR_RWALK]}/bilby_pipe_analysis",
 }
 
 TESTS = [
     'multidimensional_gaussian.py',
-    'bns.py',
-    'fast_tutorial.py',
-    'gw150914.py',
-    '1d_guassian.py'
+    '1d_guassian.py',
+    'bns_injection.ini',
+    'bbh_injection.ini',
+    'fast_bbh_injection.ini',
 ]
 
 
@@ -27,11 +42,23 @@ def make_dag(rwalk_type):
     subdir = os.path.join(maindir, "sub")
     dagman = pycondor.Dagman(name=rwalk_type, submit=subdir)
     for test_script in TESTS:
-        basename = os.path.basename(test_script).split(".py")[0]
+        test_type = os.path.basename(test_script).split(".")[1]
+        basename = os.path.basename(test_script).split(".")[0]
         job_name = f"{rwalk_type}_{basename}"
+        if test_type == "py":
+            exe = PYTHON_PATHS[rwalk_type]
+            args_str = f"{test_script} {job_name}"
+        else:
+            exe = BILBY_GENERATION_PATHS[rwalk_type]
+            analysis = BILBY_ANALYSIS_PATHS[rwalk_type]
+            args_str = f"{test_script} "
+            args_str += f"--label {job_name} "
+            args_str += f"--outdir outdir_{job_name} "
+            args_str += f"--analysis-executable {analysis}"
+
         job = pycondor.Job(
             name=job_name,
-            executable=PYTHON_PATHS[rwalk_type],
+            executable=exe,
             output=logdir,
             error=logdir,
             submit=subdir,
@@ -44,7 +71,7 @@ def make_dag(rwalk_type):
             ],
             dag=dagman
         )
-        job.add_arg(f"{test_script} {job_name}")
+        job.add_arg(args_str)
     dagman.build_submit(submit_options="False", fancyname=False)
     print(f"condor_submit_dag {os.path.join(subdir, f'{rwalk_type}.submit')}")
 
