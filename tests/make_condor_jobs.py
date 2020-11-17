@@ -37,7 +37,7 @@ TESTS = [
 
 
 def make_dag(rwalk_type):
-    maindir = os.path.abspath(f"./condor/{rwalk_type}")
+    maindir = os.path.abspath(f"./jobsub_files/{rwalk_type}")
     logdir = os.path.join(maindir, "log")
     subdir = os.path.join(maindir, "sub")
     dagman = pycondor.Dagman(name=rwalk_type, submit=subdir)
