@@ -17,9 +17,9 @@ PYTHON_PATHS = {
     REGULAR_RWALK: f"{EXE_ROOT[REGULAR_RWALK]}/python3",
 }
 
-BILBY_GENERATION_PATHS = {
-    MULTI_RWALK: f"{EXE_ROOT[MULTI_RWALK]}/bilby_pipe_generation",
-    REGULAR_RWALK: f"{EXE_ROOT[REGULAR_RWALK]}/bilby_pipe_generation",
+BILBY_PIPE_PATHS = {
+    MULTI_RWALK: f"{EXE_ROOT[MULTI_RWALK]}/bilby_pipe",
+    REGULAR_RWALK: f"{EXE_ROOT[REGULAR_RWALK]}/bilby_pipe",
 }
 
 BILBY_ANALYSIS_PATHS = {
@@ -49,12 +49,13 @@ def make_dag(rwalk_type):
             exe = PYTHON_PATHS[rwalk_type]
             args_str = f"{test_script} {job_name}"
         else:
-            exe = BILBY_GENERATION_PATHS[rwalk_type]
+            exe = BILBY_PIPE_PATHS[rwalk_type]
             analysis = BILBY_ANALYSIS_PATHS[rwalk_type]
             args_str = f"{test_script} "
             args_str += f"--label {job_name} "
             args_str += f"--outdir outdir_{job_name} "
-            args_str += f"--analysis-executable {analysis}"
+            args_str += f"--analysis-executable {analysis} "
+            args_str += f"--submit"
 
         job = pycondor.Job(
             name=job_name,
