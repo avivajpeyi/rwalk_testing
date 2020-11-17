@@ -5,6 +5,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+**condor
+**out*
+
+*.sh
+
 *.DS_Store
 # C extensions
 *.so
