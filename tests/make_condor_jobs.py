@@ -33,6 +33,7 @@ TESTS = [
     'bns_injection.ini',
     'bbh_injection.ini',
     'fast_bbh_injection.ini',
+    'GW150914.ini'
 ]
 
 
