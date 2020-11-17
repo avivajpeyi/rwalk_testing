@@ -7,9 +7,9 @@ REGULAR_RWALK = "regular_rwalk"
 
 EXE_ROOT = {
     MULTI_RWALK:
-        "/home/avi.vajpeyi/.conda/envs/timeslides/bin/",
+        "/home/avi.vajpeyi/.conda/envs/timeslides/bin",
     REGULAR_RWALK:
-        "/cvmfs/oasis.opensciencegrid.org/ligo/sw/conda/envs/igwn-py38/bin/"
+        "/cvmfs/oasis.opensciencegrid.org/ligo/sw/conda/envs/igwn-py38/bin"
 }
 
 PYTHON_PATHS = {
@@ -54,7 +54,8 @@ def make_dag(rwalk_type):
             args_str = f"{test_script} "
             args_str += f"--label {job_name} "
             args_str += f"--outdir outdir_{job_name} "
-            args_str += f"--analysis-executable {analysis} "
+            args_str += f"--analysis-executable '{analysis}' "
+            args_str += f"--scheduler condor "
             args_str += f"--submit"
 
         job = pycondor.Job(
