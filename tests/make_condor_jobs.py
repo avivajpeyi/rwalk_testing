@@ -28,8 +28,8 @@ BILBY_ANALYSIS_PATHS = {
 }
 
 TESTS = [
-    # 'multidimensional_gaussian.py',
-    # '1d_guassian.py',
+    'multidimensional_gaussian.py',
+    '1d_guassian.py',
     'bns_injection.ini',
     'bbh_injection.ini',
     'fast_bbh_injection.ini',
