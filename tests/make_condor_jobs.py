@@ -75,7 +75,8 @@ def make_dag(rwalk_type):
         )
         job.add_arg(args_str)
     dagman.build_submit(submit_options="False", fancyname=False)
-    print(f">>>\n condor_submit_dag {os.path.join(subdir, f'{rwalk_type}.submit')}\n>>>")
+    print(
+        f">>>\n condor_submit_dag {os.path.join(subdir, f'{rwalk_type}.submit')}\n>>>")
 
 
 def main():
@@ -85,11 +86,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-condor_submit_dag -f outdir_multi_rwalk_bbh_injection/submit/dag_multi_rwalk_bbh_injection.submit
-condor_submit_dag -f outdir_multi_rwalk_bns_injection/submit/dag_multi_rwalk_bns_injection.submit
-condor_submit_dag -f outdir_multi_rwalk_fast_bbh_injection/submit/dag_multi_rwalk_fast_bbh_injection.submit
-condor_submit_dag -f outdir_regular_rwalk_bbh_injection/submit/dag_regular_rwalk_bbh_injection.submit
-condor_submit_dag -f outdir_regular_rwalk_bns_injection/submit/dag_regular_rwalk_bns_injection.submit
-condor_submit_dag -f outdir_regular_rwalk_fast_bbh_injection/submit/dag_regular_rwalk_fast_bbh_injection.submit
