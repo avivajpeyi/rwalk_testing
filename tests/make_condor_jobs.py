@@ -73,7 +73,7 @@ def make_dag(rwalk_type):
         )
         job.add_arg(args_str)
     dagman.build_submit(submit_options="False", fancyname=False)
-    print(f"condor_submit_dag {os.path.join(subdir, f'{rwalk_type}.submit')}")
+    print(f">>>\n condor_submit_dag {os.path.join(subdir, f'{rwalk_type}.submit')}\n>>>")
 
 
 def main():
