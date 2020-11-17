@@ -1,12 +1,12 @@
 Normal:
-2.62hr
-nsamples: 2538
-ln_noise_evidence: -95838.528
-ln_evidence: -94387.701 +/-  0.641
-ln_bayes_factor: 1450.827 +/-  0.641
+52.23hr
+nsamples: 25786
+ln_noise_evidence: -95539.902
+ln_evidence: -94131.395 +/-  0.206
+ln_bayes_factor: 1408.508 +/-  0.206
 Multi:
-0.19hr
-nsamples: 2464
-ln_noise_evidence: -95798.205
-ln_evidence: -94386.659 +/-  0.630
-ln_bayes_factor: 1411.546 +/-  0.630
+6.03hr
+nsamples: 23657
+ln_noise_evidence: -95521.555
+ln_evidence: -94128.959 +/-  0.195
+ln_bayes_factor: 1392.596 +/-  0.195
