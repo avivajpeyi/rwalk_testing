@@ -58,6 +58,7 @@ def make_dag(rwalk_type):
             args_str += f"--analysis-executable {analysis} "
             args_str += f"--scheduler condor "
             args_str += f"--submit"
+            print(f"{exe} {args_str}")
 
         job = pycondor.Job(
             name=job_name,
