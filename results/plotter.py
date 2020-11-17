@@ -204,7 +204,7 @@ def fast_tut():
     )
     print_info(normal, multi, "fast_stats.txt")
 
-def bbh_tut():
+def bbh():
     r = RES["bbh.py"]
     normal = bilby.gw.result.CBCResult.from_json(r[0])
     multi = bilby.gw.result.CBCResult.from_json(r[1])
