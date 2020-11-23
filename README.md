@@ -20,6 +20,10 @@ This repo documents various tests conducted to compare a new r-walk method that 
     - For help with creation of HTC Condor job files use `tests/make_condor_jobs.py`
 
 
+## Changes
+- Dynesty: https://github.com/avivajpeyi/dynesty/tree/refactor_rwalk_to_return_more_points
+- Bilby: https://git.ligo.org/avi.vajpeyi/bilby/-/tree/refactor_rwalk_to_return_more_points
+
 ["fast_tutorial.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/injection_examples/fast_tutorial.py
 ["multidimensional_gaussian.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/core_examples/multidimensional_gaussian.py
 ["bns.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/injection_examples/binary_neutron_star_example.py
