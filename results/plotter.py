@@ -18,7 +18,7 @@ CORNER_KWARGS = dict(
     fill_contours=True,
     show_titles=False,
     max_n_ticks=3,
-    title_fmt=".2E"
+    title_fmt=".2E",
 )
 
 from typing import List, Optional
@@ -47,11 +47,16 @@ def overlaid_corner(samples_list, sample_labels, param=[], truths=None,
     max_len = max([len(s) for s in samples_list])
     colors = get_colors(len(samples_list) + 1)
 
+    joined_samples = pd.concat(samples_list)
+    plot_range = [(min(joined_samples[p]), max(joined_samples[p])) for p in param]
+
     fig = corner.corner(
         samples_list[0],
         color=colors[0],
         truths=truths,
+        range=plot_range,
         truth_color=colors[-1],
+        hist_kwargs=dict(density=True, color=colors[0]),
         **CORNER_KWARGS
     )
 
@@ -59,8 +64,10 @@ def overlaid_corner(samples_list, sample_labels, param=[], truths=None,
         fig = corner.corner(
             samples_list[idx],
             fig=fig,
+            range=plot_range,
             weights=get_normalisation_weight(len(samples_list[idx]), max_len),
             color=colors[idx],
+            hist_kwargs=dict(density=True, color=colors[idx]),
             **CORNER_KWARGS
         )
 
@@ -74,7 +81,6 @@ def overlaid_corner(samples_list, sample_labels, param=[], truths=None,
     )
     plt.savefig(fname)
     plt.close()
-
 
 def get_normalisation_weight(len_current_samples, len_of_longest_samples):
     return np.ones(len_current_samples) * (len_of_longest_samples / len_current_samples)

@@ -64,6 +64,7 @@ def main():
         npoints=1500,
         walks=100,
         nact=10,
+        npool=1,
         outdir=outdir,
         label=label,
         plot=True,
