@@ -21,8 +21,14 @@ all the accepted points from it's random walks (normally > 100 walk steps).
     - For help with creation of HTC Condor job files use `tests/make_condor_jobs.py`
 
 
+<<<<<<< HEAD
 ## Changes:
 - main changes are in Dynesty + Bilby.core.sampler.dynesty 
+=======
+## Changes
+- Dynesty: https://github.com/avivajpeyi/dynesty/tree/refactor_rwalk_to_return_more_points
+- Bilby: https://git.ligo.org/avi.vajpeyi/bilby/-/tree/refactor_rwalk_to_return_more_points
+>>>>>>> d6ae9e4cad5de70847cc2a9d2b2eaa5935ca34cd
 
 ["fast_tutorial.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/gw_examples/injection_examples/fast_tutorial.py
 ["multidimensional_gaussian.py"]: https://git.ligo.org/lscsoft/bilby/-/blob/master/examples/core_examples/multidimensional_gaussian.py
