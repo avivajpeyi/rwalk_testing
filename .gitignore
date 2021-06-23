@@ -4,7 +4,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+*envs
+*packages
+rwalk_files/
 **condor
 **out*
 
