@@ -7,9 +7,9 @@ REGULAR_RWALK = "regular_rwalk"
 
 EXE_ROOT = {
     MULTI_RWALK:
-        "/home/avi.vajpeyi/.conda/envs/timeslides/bin",
+        "/home/avi.vajpeyi/projects/rwalk_testing/rwalk_files/envs/modded/bin",
     REGULAR_RWALK:
-        "/cvmfs/oasis.opensciencegrid.org/ligo/sw/conda/envs/igwn-py38/bin"
+        "/home/avi.vajpeyi/projects/rwalk_testing/rwalk_files/envs/main/bin"
 }
 
 PYTHON_PATHS = {
