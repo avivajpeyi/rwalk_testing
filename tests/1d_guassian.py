@@ -63,11 +63,12 @@ def main():
         sample="rwalk",
         npoints=1500,
         walks=100,
-        nact=10,
-        npool=1,
+        nact=1,
         outdir=outdir,
         label=label,
         plot=True,
+        clean=True,
+        dlogz=0.1
     )
     result.plot_corner(truths=dict(mu=mean, sigma=sigma))
 

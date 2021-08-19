@@ -1,0 +1,56 @@
+import numpy as np
+import bilby
+import sys
+
+# Set the duration and sampling frequency of the data segment that we're
+# going to inject the signal into
+duration = 4.
+sampling_frequency = 2048.
+
+# Specify the output directory and the name of the simulation.
+label = sys.argv[1]
+outdir = f'outdir_{label}'
+
+bilby.core.utils.setup_logger(outdir=outdir, label=label)
+
+np.random.seed(0)
+injection_parameters = dict(
+    mass_1=36., mass_2=29., a_1=0.4, a_2=0.3, tilt_1=0.5, tilt_2=1.0,
+    phi_12=1.7, phi_jl=0.3, luminosity_distance=2000., theta_jn=0.4, psi=2.659,
+    phase=1.3, geocent_time=1126259642.413, ra=1.375, dec=-1.2108)
+
+waveform_arguments = dict(waveform_approximant='IMRPhenomPv2',
+                          reference_frequency=50., minimum_frequency=20.)
+
+waveform_generator = bilby.gw.WaveformGenerator(
+    duration=duration, sampling_frequency=sampling_frequency,
+    frequency_domain_source_model=bilby.gw.source.lal_binary_black_hole,
+    parameter_conversion=bilby.gw.conversion.convert_to_lal_binary_black_hole_parameters,
+    waveform_arguments=waveform_arguments)
+
+ifos = bilby.gw.detector.InterferometerList(['H1'])
+ifos.set_strain_data_from_power_spectral_densities(
+    sampling_frequency=sampling_frequency, duration=duration,
+    start_time=injection_parameters['geocent_time'] - 3)
+ifos.inject_signal(waveform_generator=waveform_generator,
+                   parameters=injection_parameters)
+
+# Free params mass_1, mass_2
+priors = bilby.gw.prior.BBHPriorDict()
+priors['geocent_time'] = bilby.core.prior.Uniform(
+    minimum=injection_parameters['geocent_time'] - 1,
+    maximum=injection_parameters['geocent_time'] + 1,
+    name='geocent_time', latex_label='$t_c$', unit='$s$')
+
+likelihood = bilby.gw.GravitationalWaveTransient(
+    interferometers=ifos, waveform_generator=waveform_generator)
+
+result = bilby.run_sampler(
+    likelihood=likelihood, priors=priors, sampler='dynesty', npoints=1000, sample="rwalk",
+    injection_parameters=injection_parameters, outdir=outdir, label=label)
+
+# Make a corner plot.
+result.plot_corner()
+
+
+print("Corner saved. ")

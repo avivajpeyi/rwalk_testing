@@ -71,7 +71,7 @@ blobs = [blob] * act_num_accepted
 # for each p(act_accepted_us) draw random num and see if I should keep the act_accepted_us
 # unique_rows = np.unique(original_array, axis=0)
 
-[array([0.60079568, 0.21111459]),
+x = [array([0.60079568, 0.21111459]),
  array([0.55692637, 0.13981609]),
  array([0.39461896, 0.14885196]),
  array([0.43343924, 0.1764381 ]),

@@ -1,0 +1,4 @@
+pygit2
+lalsuite
+git+https://github.com/avivajpeyi/dynesty.git@refactor_rwalk_to_return_more_points#egg=dynesty
+git+https://git.ligo.org/avi.vajpeyi/bilby.git@refactor_rwalk_to_return_more_points#egg=bilby
